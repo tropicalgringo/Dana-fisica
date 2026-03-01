@@ -3,923 +3,1073 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guía de Física — Gravitación, Torque & Energía</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Física Viva — Guía Interactiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f1a;
-    --surface: #131626;
-    --surface2: #1a1f35;
-    --accent1: #f7c948;
-    --accent2: #4af0c4;
-    --accent3: #f06090;
-    --accent4: #7b9cff;
-    --text: #e8eaf0;
-    --muted: #8a8fa8;
-  }
+:root {
+  --bg: #0d0f1a;
+  --surface: #131626;
+  --surface2: #1a1f35;
+  --gold: #f7c948;
+  --teal: #4af0c4;
+  --rose: #f06090;
+  --blue: #7b9cff;
+  --ink: #e8eaf0;
+  --muted: #7b7d95;
+  --border: rgba(255,255,255,.07);
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    line-height: 1.65;
-    overflow-x: hidden;
-  }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-  /* ───── HERO ───── */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 60px 24px;
-    overflow: hidden;
-  }
+/* ── PROGRESS ── */
+#prog {
+  position: fixed; top:0; left:0; height:3px;
+  background: linear-gradient(to right, var(--gold), var(--teal));
+  z-index:1000; width:0%;
+  box-shadow: 0 0 10px var(--gold);
+  transition: width .08s linear;
+}
 
-  .hero-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 30% 40%, rgba(122,156,255,.18) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 70%, rgba(247,201,72,.12) 0%, transparent 55%),
-                radial-gradient(ellipse at 50% 10%, rgba(74,240,196,.10) 0%, transparent 50%);
-  }
+/* ── STARFIELD ── */
+#stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
 
-  /* Animated orbits */
-  .orbit-ring {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.06);
-    animation: spin linear infinite;
-  }
-  .orbit-ring.r1 { width: 480px; height: 480px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 40s; }
-  .orbit-ring.r2 { width: 700px; height: 700px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 70s; animation-direction: reverse; }
-  .orbit-ring.r3 { width: 950px; height: 950px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 100s; }
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0;
+  display:flex; align-items:center; gap:6px;
+  padding:12px 28px;
+  background: rgba(13,15,26,.85);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  z-index:800; flex-wrap:wrap;
+}
+.nav-logo { font-family:'Fraunces',serif; font-size:15px; font-weight:900; color:var(--gold); margin-right:auto; }
+nav a {
+  color:var(--muted); text-decoration:none;
+  font-size:12px; font-weight:600;
+  padding:5px 12px; border-radius:20px;
+  transition:all .2s; letter-spacing:.05em; text-transform:uppercase;
+  border:1px solid transparent;
+}
+nav a:hover, nav a.active { color:var(--gold); border-color:rgba(247,201,72,.3); background:rgba(247,201,72,.08); }
 
-  .planet {
-    position: absolute;
-    border-radius: 50%;
-    top: -6px; left: 50%;
-  }
+/* ── SECTIONS ── */
+.sec {
+  position:relative; z-index:1;
+  max-width:1060px; margin:0 auto;
+  padding:90px 28px;
+}
+.divider {
+  height:1px; max-width:1060px; margin:0 auto;
+  background:linear-gradient(to right, transparent, var(--border), transparent);
+}
 
-  @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+/* ── HERO ── */
+#hero {
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  text-align:center; padding:110px 24px 80px;
+  position:relative; z-index:1;
+}
+.hero-tag {
+  display:inline-block; font-size:11px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase;
+  color:var(--teal); border:1px solid rgba(74,240,196,.3);
+  background:rgba(74,240,196,.07);
+  padding:5px 18px; border-radius:20px; margin-bottom:28px;
+  animation:fadeUp .7s both;
+}
+.hero-title {
+  font-family:'Fraunces',serif;
+  font-size:clamp(3.5rem,9vw,7rem);
+  line-height:.95; margin-bottom:20px;
+  animation:fadeUp .7s .15s both;
+}
+.hero-title em { font-style:italic; color:var(--gold); }
+.hero-title .grad {
+  display:block;
+  background:linear-gradient(120deg,var(--gold),var(--rose),var(--blue));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub {
+  max-width:480px; color:var(--muted);
+  font-size:1.05rem; margin-bottom:40px;
+  animation:fadeUp .7s .3s both;
+}
+.hero-toc {
+  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  animation:fadeUp .7s .45s both;
+}
+.hero-toc a {
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--ink); text-decoration:none;
+  padding:10px 20px; border-radius:10px;
+  font-size:13px; font-weight:600;
+  transition:all .2s;
+}
+.hero-toc a:hover { background:rgba(247,201,72,.1); border-color:rgba(247,201,72,.35); color:var(--gold); transform:translateY(-2px); }
 
-  .hero-content { position: relative; z-index: 2; }
+/* ── SOLAR SYSTEM (hero bg) ── */
+.solar {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  pointer-events:none; z-index:0; overflow:hidden;
+}
+.sun-core {
+  width:80px; height:80px;
+  background:radial-gradient(circle at 35% 35%, #fffbe0, var(--gold) 55%, #e07800);
+  border-radius:50%;
+  box-shadow:0 0 50px 16px rgba(247,201,72,.28), 0 0 100px 36px rgba(247,150,0,.12);
+  animation:sunPulse 4s ease-in-out infinite;
+}
+@keyframes sunPulse {
+  0%,100%{box-shadow:0 0 50px 16px rgba(247,201,72,.28),0 0 100px 36px rgba(247,150,0,.12)}
+  50%{box-shadow:0 0 80px 26px rgba(247,201,72,.45),0 0 140px 55px rgba(247,150,0,.2)}
+}
+.ring {
+  position:absolute; border-radius:50%;
+  border:1px solid rgba(255,255,255,.05);
+  display:flex; align-items:flex-start; justify-content:center;
+}
+.r1{width:210px;height:210px;animation:spin 10s linear infinite;}
+.r2{width:360px;height:360px;animation:spin 18s linear infinite reverse;}
+.r3{width:540px;height:540px;animation:spin 32s linear infinite;}
+.r4{width:740px;height:740px;animation:spin 55s linear infinite reverse;}
+@keyframes spin { to{transform:rotate(360deg);} }
+.dot { border-radius:50%; }
+.d1{width:12px;height:12px;background:#ff7043;box-shadow:0 0 10px #ff7043;transform:translateY(-6px);}
+.d2{width:16px;height:16px;background:var(--teal);box-shadow:0 0 12px var(--teal);transform:translateY(-8px);}
+.d3{width:10px;height:10px;background:var(--blue);box-shadow:0 0 8px var(--blue);transform:translateY(-5px);}
+.d4{width:20px;height:20px;background:var(--rose);box-shadow:0 0 14px var(--rose);transform:translateY(-10px);}
 
-  .hero-tag {
-    display: inline-block;
-    background: rgba(247,201,72,.15);
-    color: var(--accent1);
-    border: 1px solid rgba(247,201,72,.3);
-    border-radius: 40px;
-    padding: 5px 18px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-  }
+/* ── SECTION HEADER ── */
+.sec-head { margin-bottom:44px; }
+.sec-tag {
+  display:inline-block; font-size:10px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:4px 14px; border-radius:20px; margin-bottom:12px;
+}
+.t-gold { color:var(--gold); background:rgba(247,201,72,.1); border:1px solid rgba(247,201,72,.2); }
+.t-teal { color:var(--teal); background:rgba(74,240,196,.08); border:1px solid rgba(74,240,196,.2); }
+.t-rose { color:var(--rose); background:rgba(240,96,144,.08); border:1px solid rgba(240,96,144,.2); }
+.t-blue { color:var(--blue); background:rgba(123,156,255,.1); border:1px solid rgba(123,156,255,.2); }
+.sec-head h2 {
+  font-family:'Fraunces',serif;
+  font-size:clamp(2rem,5vw,3.6rem);
+  line-height:1.0; margin-bottom:10px;
+}
+.sec-head p { color:var(--muted); max-width:560px; font-size:.95rem; }
 
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(3rem, 8vw, 6.5rem);
-    font-weight: 900;
-    line-height: 1.0;
-    margin-bottom: 20px;
-  }
+/* ── WHY BANNER ── */
+.why {
+  background:var(--surface2);
+  border-left:3px solid var(--gold);
+  border-radius:0 14px 14px 0;
+  padding:16px 22px; margin-bottom:36px;
+  font-size:14px; color:var(--muted); line-height:1.7;
+}
+.why strong { color:var(--ink); }
 
-  h1 em {
-    font-style: italic;
-    color: var(--accent1);
-    display: block;
-  }
+/* ── GRID ── */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+.g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+@media(max-width:680px){ .g2,.g3{grid-template-columns:1fr;} }
 
-  .hero-sub {
-    font-size: 1.1rem;
-    color: var(--muted);
-    max-width: 520px;
-    margin: 0 auto 48px;
-  }
+/* ── CARDS ── */
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px; padding:26px;
+  position:relative; overflow:hidden;
+  transition:transform .22s, box-shadow .22s;
+}
+.card:hover { transform:translateY(-4px); box-shadow:0 20px 44px rgba(0,0,0,.45); }
+.card::before { content:''; position:absolute; top:0;left:0;right:0;height:2px;border-radius:18px 18px 0 0; }
+.c-gold::before { background:var(--gold); }
+.c-teal::before { background:var(--teal); }
+.c-rose::before { background:var(--rose); }
+.c-blue::before { background:var(--blue); }
+.card-lbl { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; }
+.lbl-gold{color:var(--gold);} .lbl-teal{color:var(--teal);} .lbl-rose{color:var(--rose);} .lbl-blue{color:var(--blue);}
+.card h3 { font-family:'Fraunces',serif; font-size:1.2rem; margin-bottom:10px; }
+.card p { color:var(--muted); font-size:13.5px; line-height:1.65; }
 
-  .toc {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+/* ── FORMULA ── */
+.f-banner {
+  border-radius:20px; padding:34px; text-align:center; margin:28px 0;
+  position:relative; overflow:hidden;
+}
+.f-lbl { font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; margin-bottom:8px; }
+.f-eq {
+  font-family:'Fraunces',serif;
+  font-size:clamp(1.8rem,4.5vw,2.8rem);
+  font-weight:900; margin:6px 0 18px;
+}
+.f-chips { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.chip {
+  background:rgba(255,255,255,.06);
+  border-radius:7px; padding:5px 11px;
+  font-size:12px; font-family:'JetBrains Mono',monospace;
+  color:var(--muted);
+}
+.chip b { color:var(--teal); }
 
-  .toc a {
-    background: var(--surface2);
-    border: 1px solid rgba(255,255,255,.08);
-    color: var(--text);
-    text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all .2s;
-  }
-  .toc a:hover { background: rgba(247,201,72,.15); border-color: var(--accent1); color: var(--accent1); }
+.f-inline {
+  background:rgba(0,0,0,.35); border:1px solid var(--border);
+  border-radius:12px; padding:16px 20px; margin:14px 0;
+  position:relative;
+}
+.f-inline::before {
+  content:'FÓRMULA'; position:absolute; top:-9px; left:14px;
+  background:var(--bg); padding:0 7px;
+  font-size:9px; font-weight:700; letter-spacing:.14em; color:var(--gold);
+}
+.f-inline .eq {
+  font-family:'Fraunces',serif;
+  font-size:1.45rem; color:var(--gold);
+  text-align:center; margin:6px 0 12px;
+}
 
-  /* ───── SECTIONS ───── */
-  .section {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 80px 24px;
-  }
+/* ── CALLOUT ── */
+.note {
+  border-radius:10px; padding:14px 18px;
+  font-size:13.5px; color:var(--muted); line-height:1.65;
+  margin:14px 0;
+}
+.n-teal{background:rgba(74,240,196,.07);border:1px solid rgba(74,240,196,.18);}
+.n-gold{background:rgba(247,201,72,.07);border:1px solid rgba(247,201,72,.18);}
+.n-rose{background:rgba(240,96,144,.07);border:1px solid rgba(240,96,144,.18);}
+.n-blue{background:rgba(123,156,255,.09);border:1px solid rgba(123,156,255,.18);}
+.note strong { color:var(--ink); }
 
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 48px;
-  }
+/* ── STEPS ── */
+.steps { display:flex; flex-direction:column; gap:14px; }
+.step { display:flex; gap:14px; align-items:flex-start; }
+.sn {
+  width:30px; height:30px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;
+}
+.sn-gold{background:rgba(247,201,72,.15);color:var(--gold);}
+.sn-blue{background:rgba(123,156,255,.15);color:var(--blue);}
+.sn-teal{background:rgba(74,240,196,.12);color:var(--teal);}
+.step p { color:var(--muted); font-size:13.5px; }
+.step p strong { color:var(--ink); display:block; }
 
-  .section-icon {
-    width: 56px; height: 56px;
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    flex-shrink: 0;
-  }
+/* ── TABLE ── */
+.t-wrap { border-radius:14px; border:1px solid var(--border); overflow:hidden; margin:16px 0; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:rgba(255,255,255,.04); padding:11px 16px; text-align:left; font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+td { padding:11px 16px; border-top:1px solid var(--border); color:var(--muted); }
+td strong { color:var(--ink); }
+tr:hover td { background:rgba(255,255,255,.02); }
 
-  .icon-yellow { background: rgba(247,201,72,.15); }
-  .icon-green  { background: rgba(74,240,196,.12); }
-  .icon-pink   { background: rgba(240,96,144,.12); }
-  .icon-blue   { background: rgba(122,156,255,.15); }
+/* ── CANVAS DEMOS ── */
+.demo-wrap {
+  background:rgba(0,0,0,.35); border:1px solid var(--border);
+  border-radius:16px; overflow:hidden; position:relative;
+}
+.demo-hint { font-size:11px; color:var(--muted); text-align:center; margin-top:8px; letter-spacing:.05em; font-weight:600; }
 
-  .section-header h2 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 700;
-    line-height: 1.1;
-  }
+canvas { display:block; }
 
-  .section-header h2 span { color: var(--accent1); }
+/* ── LEVER CONTROLS ── */
+.lever-ctrl { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:16px; }
+.ctrl-g { display:flex; flex-direction:column; align-items:center; gap:5px; }
+.ctrl-lbl { font-size:10px; font-weight:700; letter-spacing:.08em; color:var(--muted); text-transform:uppercase; }
+input[type=range] {
+  -webkit-appearance:none; width:140px; height:3px;
+  border-radius:2px; background:var(--border); outline:none; cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:14px; height:14px;
+  border-radius:50%; background:var(--gold); cursor:pointer;
+  box-shadow:0 0 6px rgba(247,201,72,.5);
+}
+.ctrl-val { font-family:'JetBrains Mono',monospace; font-size:11px; }
+.balance { text-align:center; margin-top:10px; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; transition:color .3s; }
 
-  .divider {
-    height: 1px;
-    background: linear-gradient(to right, rgba(255,255,255,.1), transparent);
-    margin-bottom: 80px;
-  }
+/* ── QUIZ ── */
+.quiz-card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:26px; }
+.quiz-q { font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:14px; line-height:1.4; }
+.opts { display:flex; flex-direction:column; gap:8px; }
+.opt {
+  background:rgba(255,255,255,.04); border:1px solid var(--border);
+  border-radius:9px; padding:11px 15px; cursor:pointer;
+  font-size:13.5px; color:var(--muted); transition:all .2s; text-align:left;
+  font-family:'DM Sans',sans-serif;
+}
+.opt:hover { background:rgba(255,255,255,.07); color:var(--ink); }
+.opt:disabled { cursor:default; }
+.opt.ok { background:rgba(74,240,196,.1); border-color:var(--teal); color:var(--teal); }
+.opt.no { background:rgba(240,96,144,.1); border-color:var(--rose); color:var(--rose); }
+.fb { margin-top:12px; font-size:13px; color:var(--muted); display:none; line-height:1.6; }
+.fb.show { display:block; }
 
-  /* ───── CARDS ───── */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+.rev { opacity:0; transform:translateY(28px); transition:opacity .6s, transform .6s; }
+.rev.on { opacity:1; transform:none; }
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
 
-  .card {
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 20px;
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-    transition: transform .2s, box-shadow .2s;
-  }
-  .card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,0,0,.4); }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 20px 20px 0 0;
-  }
-  .card.y::before { background: var(--accent1); }
-  .card.g::before { background: var(--accent2); }
-  .card.p::before { background: var(--accent3); }
-  .card.b::before { background: var(--accent4); }
-
-  .card-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .card.y .card-label { color: var(--accent1); }
-  .card.g .card-label { color: var(--accent2); }
-  .card.p .card-label { color: var(--accent3); }
-  .card.b .card-label { color: var(--accent4); }
-
-  .card h3 {
-    font-family: 'Fraunces', serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 14px;
-    line-height: 1.2;
-  }
-
-  .card p { color: var(--muted); font-size: 14px; }
-
-  /* ───── FORMULA BOX ───── */
-  .formula-box {
-    background: var(--surface2);
-    border: 1px solid rgba(247,201,72,.25);
-    border-radius: 16px;
-    padding: 24px 28px;
-    margin: 20px 0;
-    position: relative;
-  }
-
-  .formula-box::before {
-    content: 'FÓRMULA';
-    position: absolute;
-    top: -10px; left: 20px;
-    background: var(--accent1);
-    color: var(--bg);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    padding: 2px 10px;
-    border-radius: 20px;
-  }
-
-  .formula {
-    font-family: 'Georgia', serif;
-    font-size: 1.5rem;
-    text-align: center;
-    color: var(--accent1);
-    margin: 8px 0 16px;
-    letter-spacing: .05em;
-  }
-
-  .formula-vars {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .var-chip {
-    background: rgba(255,255,255,.06);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 13px;
-  }
-
-  .var-chip strong { color: var(--accent2); }
-
-  /* ───── SVG DIAGRAMS ───── */
-  .diagram-wrap {
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 20px;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .diagram-caption {
-    font-size: 13px;
-    color: var(--muted);
-    text-align: center;
-    max-width: 440px;
-  }
-
-  /* ───── TWO COLS ───── */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: start;
-  }
-
-  @media(max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
-
-  /* ───── BIG FORMULA BANNER ───── */
-  .banner {
-    background: linear-gradient(135deg, rgba(247,201,72,.12), rgba(74,240,196,.08));
-    border: 1px solid rgba(247,201,72,.2);
-    border-radius: 24px;
-    padding: 36px;
-    margin: 32px 0;
-    text-align: center;
-  }
-
-  .banner .big-f {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(1.8rem, 5vw, 3rem);
-    color: var(--accent1);
-    margin: 8px 0 16px;
-  }
-
-  /* ───── STEP LIST ───── */
-  .steps { list-style: none; display: flex; flex-direction: column; gap: 16px; }
-
-  .steps li {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-
-  .step-num {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700;
-    flex-shrink: 0;
-  }
-  .step-num.y { background: rgba(247,201,72,.2); color: var(--accent1); }
-  .step-num.g { background: rgba(74,240,196,.15); color: var(--accent2); }
-  .step-num.p { background: rgba(240,96,144,.15); color: var(--accent3); }
-
-  /* ───── HIGHLIGHT CALLOUT ───── */
-  .callout {
-    border-left: 3px solid var(--accent2);
-    padding: 16px 20px;
-    background: rgba(74,240,196,.06);
-    border-radius: 0 12px 12px 0;
-    margin: 20px 0;
-    font-size: 14px;
-    color: var(--muted);
-  }
-  .callout strong { color: var(--accent2); }
-
-  .callout.warn {
-    border-color: var(--accent3);
-    background: rgba(240,96,144,.06);
-  }
-  .callout.warn strong { color: var(--accent3); }
-
-  .callout.info {
-    border-color: var(--accent4);
-    background: rgba(122,156,255,.06);
-  }
-  .callout.info strong { color: var(--accent4); }
-
-  /* ───── TABLE ───── */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  th {
-    background: rgba(255,255,255,.05);
-    padding: 12px 16px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  td {
-    padding: 12px 16px;
-    border-top: 1px solid rgba(255,255,255,.05);
-    color: var(--muted);
-  }
-  td strong { color: var(--text); }
-  tr:hover td { background: rgba(255,255,255,.02); }
-
-  /* ───── EXPERIMENT CARD ───── */
-  .exp-card {
-    background: var(--surface);
-    border: 1px solid rgba(74,240,196,.15);
-    border-radius: 20px;
-    padding: 28px;
-  }
-  .exp-card h3 {
-    font-family: 'Fraunces', serif;
-    color: var(--accent2);
-    font-size: 1.2rem;
-    margin-bottom: 12px;
-  }
-
-  /* ───── FOOTER ───── */
-  footer {
-    text-align: center;
-    padding: 48px 24px 60px;
-    color: var(--muted);
-    font-size: 13px;
-    border-top: 1px solid rgba(255,255,255,.06);
-  }
-  footer strong { color: var(--accent1); }
-
-  /* scroll fade-in */
-  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
-  .fade-in.visible { opacity: 1; transform: none; }
+/* ── FOOTER ── */
+footer {
+  text-align:center; padding:50px 24px 64px;
+  color:var(--muted); font-size:13px;
+  border-top:1px solid var(--border);
+  position:relative; z-index:1;
+}
+.ft-big {
+  font-family:'Fraunces',serif;
+  font-size:clamp(1.8rem,4vw,3rem);
+  color:var(--ink); margin-bottom:10px;
+}
+.ft-big em { font-style:italic; color:var(--gold); }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ HERO ═══════════════ -->
-<section class="hero">
-  <div class="hero-bg"></div>
+<div id="prog"></div>
+<canvas id="stars"></canvas>
 
-  <!-- Decorative orbits -->
-  <div class="orbit-ring r1">
-    <div class="planet" style="width:12px;height:12px;background:var(--accent1);margin-left:-6px;box-shadow:0 0 16px var(--accent1);"></div>
-  </div>
-  <div class="orbit-ring r2">
-    <div class="planet" style="width:8px;height:8px;background:var(--accent2);margin-left:-4px;box-shadow:0 0 12px var(--accent2);top:0;left:30%;"></div>
-  </div>
-  <div class="orbit-ring r3">
-    <div class="planet" style="width:10px;height:10px;background:var(--accent3);margin-left:-5px;box-shadow:0 0 14px var(--accent3);top:0;left:60%;"></div>
-  </div>
+<!-- NAV -->
+<nav id="nav">
+  <span class="nav-logo">⚛ Física Viva</span>
+  <a href="#hero" class="active">Inicio</a>
+  <a href="#grav">🌍 Gravedad</a>
+  <a href="#torque">⚙️ Torque</a>
+  <a href="#eq">⚖️ Equilibrio</a>
+  <a href="#energia">⚡ Energía</a>
+  <a href="#lab">🔬 Lab</a>
+</nav>
 
-  <div class="hero-content">
-    <div class="hero-tag">📚 Guía de Estudio · Física</div>
-    <h1>
-      Gravitación,
-      <em>Torque</em>
-      y Energía
+<!-- ═══════ HERO ═══════ -->
+<section id="hero">
+  <div class="solar" aria-hidden="true">
+    <div style="position:relative;width:800px;height:800px;display:flex;align-items:center;justify-content:center;">
+      <div class="sun-core"></div>
+      <div class="ring r1" style="position:absolute;"><div class="dot d1"></div></div>
+      <div class="ring r2" style="position:absolute;"><div class="dot d2"></div></div>
+      <div class="ring r3" style="position:absolute;"><div class="dot d3"></div></div>
+      <div class="ring r4" style="position:absolute;"><div class="dot d4"></div></div>
+    </div>
+  </div>
+  <div style="position:relative;z-index:2;">
+    <div class="hero-tag">📚 Guía de Física · Bachillerato</div>
+    <h1 class="hero-title">
+      El universo<br>
+      tiene <em>reglas.</em>
+      <span class="grad">Apréndelas.</span>
     </h1>
-    <p class="hero-sub">
-      Todo lo que necesitas saber sobre las leyes de Newton, gravedad universal, torque, equilibrio y trabajo. ¡Estudia con estilo!
-    </p>
-    <nav class="toc">
-      <a href="#gravitacion">🌍 Gravitación</a>
+    <p class="hero-sub">Gravitación, Torque, Equilibrio y Energía — visual, interactivo y con el <strong style="color:var(--ink)">por qué</strong> de todo.</p>
+    <nav class="hero-toc">
+      <a href="#grav">🌍 Gravitación</a>
       <a href="#torque">⚙️ Torque</a>
-      <a href="#equilibrio">⚖️ Equilibrio</a>
+      <a href="#eq">⚖️ Equilibrio</a>
       <a href="#energia">⚡ Energía</a>
-      <a href="#experimentos">🔬 Experimentos</a>
+      <a href="#lab">🔬 Lab</a>
     </nav>
   </div>
 </section>
 
-<!-- ═══════════════ GRAVITACIÓN ═══════════════ -->
-<div id="gravitacion" class="section fade-in">
-  <div class="section-header">
-    <div class="section-icon icon-yellow">🌍</div>
-    <h2>Ley de Gravitación <span>Universal</span></h2>
+<!-- ═══════ GRAVITACIÓN ═══════ -->
+<div class="divider"></div>
+<section id="grav" class="sec">
+  <div class="sec-head rev">
+    <div class="sec-tag t-gold">Módulo 1</div>
+    <h2>Gravitación <em style="font-style:italic;color:var(--gold)">Universal</em></h2>
+    <p>Una sola ley explica por qué caen las manzanas, por qué orbita la Luna y por qué funcionan los satélites GPS.</p>
   </div>
 
-  <p style="color:var(--muted);max-width:680px;margin-bottom:32px;">
-    Formulada por <strong style="color:var(--text)">Isaac Newton</strong> en 1687, esta ley describe cómo cualquier par de cuerpos con masa se atraen mutuamente. Es el fundamento de la mecánica celeste y explica tanto la caída libre como las órbitas planetarias.
-  </p>
+  <div class="why rev">
+    <strong>¿Por qué importa?</strong> En 1687 Newton demostró que la fuerza que hace caer una manzana y la que mantiene la Luna en órbita son <strong>exactamente la misma</strong>. Sin esta ley no existirían los satélites, los cohetes ni el internet.
+  </div>
 
-  <div class="banner">
-    <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">Ley de Gravitación Universal</div>
-    <div class="big-f">F = G · m₁ · m₂ / r²</div>
-    <div class="formula-vars" style="justify-content:center">
-      <span class="var-chip"><strong>F</strong> Fuerza gravitacional (N)</span>
-      <span class="var-chip"><strong>G</strong> 6.674 × 10⁻¹¹ N·m²/kg²</span>
-      <span class="var-chip"><strong>m₁, m₂</strong> Masas (kg)</span>
-      <span class="var-chip"><strong>r</strong> Distancia entre centros (m)</span>
+  <div class="f-banner rev" style="background:linear-gradient(135deg,rgba(247,201,72,.1),rgba(247,120,0,.05));border:1px solid rgba(247,201,72,.22);">
+    <div class="f-lbl" style="color:var(--gold)">Ley de Gravitación Universal — Newton 1687</div>
+    <div class="f-eq" style="color:var(--gold)">F = G · m₁ · m₂ / r²</div>
+    <div class="f-chips">
+      <span class="chip"><b>F</b> fuerza (N)</span>
+      <span class="chip"><b>G</b> = 6.674 × 10⁻¹¹ N·m²/kg²</span>
+      <span class="chip"><b>m₁, m₂</b> masas (kg)</span>
+      <span class="chip"><b>r</b> distancia entre centros (m)</span>
     </div>
   </div>
 
-  <div class="two-col" style="margin-top:28px;">
+  <div class="g2 rev" style="align-items:start;">
+    <!-- interactive gravity canvas -->
     <div>
-      <div class="card-grid" style="grid-template-columns:1fr;">
-        <div class="card y">
-          <div class="card-label">Concepto clave</div>
-          <h3>Gravedad como fenómeno de masa</h3>
-          <p>La gravedad no es "mágica" — es una consecuencia de tener masa. A mayor masa, mayor atracción gravitacional. La Tierra nos atrae con la misma fuerza con que la atraemos a ella (Newton III).</p>
+      <div class="demo-wrap">
+        <canvas id="grav-c" width="460" height="260"></canvas>
+      </div>
+      <p class="demo-hint">👆 Clic para agregar masa y ver cómo cambia la fuerza en tiempo real</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card c-gold">
+        <div class="card-lbl lbl-gold">¿Por qué r²?</div>
+        <h3>La ley del cuadrado inverso</h3>
+        <p>La gravedad se esparce como la luz de una bombilla. El área de una esfera crece con r², así que si <strong style="color:var(--ink)">duplicas la distancia</strong>, la fuerza cae a <strong style="color:var(--gold)">¼</strong> — no a la mitad.</p>
+      </div>
+      <div class="card c-teal">
+        <div class="card-lbl lbl-teal">¿De dónde sale g = 9.8 m/s²?</div>
+        <h3>No es un número mágico</h3>
+        <p>Se <em>deduce</em> de la ley universal con la masa y radio de la Tierra:</p>
+        <div class="f-inline">
+          <div class="eq">g = G · M_T / R_T²  ≈ 9.8 m/s²</div>
         </div>
-        <div class="card g">
-          <div class="card-label">Potencial gravitacional cerca de la Tierra</div>
-          <h3>Aceleración g ≈ 9.8 m/s²</h3>
-          <p>Para cuerpos cerca de la superficie terrestre, la atracción gravitacional se simplifica: <strong style="color:var(--text)">g = G·M_T / R_T²</strong>. Esta es la g que usas en Física de bachillerato.</p>
-          <div class="formula-box" style="margin-top:16px;">
-            <div class="formula">F = m · g</div>
-            <div class="formula-vars">
-              <span class="var-chip"><strong>m</strong> masa del objeto</span>
-              <span class="var-chip"><strong>g</strong> 9.8 m/s²</span>
-            </div>
-          </div>
-        </div>
+        <p>F = mg es simplemente la ley universal <strong style="color:var(--ink)">aplicada a la Tierra</strong> — no son dos fórmulas distintas.</p>
       </div>
     </div>
+  </div>
 
-    <!-- SVG Diagram: two masses attracting -->
-    <div class="diagram-wrap">
-      <svg width="340" height="200" viewBox="0 0 340 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- mass 1 -->
-        <circle cx="70" cy="100" r="38" fill="rgba(247,201,72,.15)" stroke="rgba(247,201,72,.6)" stroke-width="2"/>
-        <circle cx="70" cy="100" r="24" fill="rgba(247,201,72,.2)"/>
-        <text x="70" y="105" text-anchor="middle" fill="#f7c948" font-size="14" font-family="Georgia">m₁</text>
-        <!-- mass 2 -->
-        <circle cx="270" cy="100" r="28" fill="rgba(74,240,196,.12)" stroke="rgba(74,240,196,.6)" stroke-width="2"/>
-        <circle cx="270" cy="100" r="16" fill="rgba(74,240,196,.18)"/>
-        <text x="270" y="105" text-anchor="middle" fill="#4af0c4" font-size="14" font-family="Georgia">m₂</text>
-        <!-- arrows -->
-        <line x1="110" y1="100" x2="150" y2="100" stroke="rgba(247,201,72,.8)" stroke-width="2.5" stroke-dasharray="4 3"/>
-        <polygon points="150,94 162,100 150,106" fill="#f7c948"/>
-        <line x1="230" y1="100" x2="188" y2="100" stroke="rgba(74,240,196,.8)" stroke-width="2.5" stroke-dasharray="4 3"/>
-        <polygon points="188,94 176,100 188,106" fill="#4af0c4"/>
-        <!-- r label -->
-        <line x1="70" y1="150" x2="270" y2="150" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
-        <text x="170" y="167" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="12" font-family="DM Sans">r</text>
-        <!-- F labels -->
-        <text x="130" y="90" text-anchor="middle" fill="#f7c948" font-size="12">F→</text>
-        <text x="210" y="90" text-anchor="middle" fill="#4af0c4" font-size="12">←F</text>
-      </svg>
-      <p class="diagram-caption">Las fuerzas son iguales en magnitud pero opuestas en dirección — 3ra Ley de Newton en acción.</p>
+  <div class="rev" style="margin-top:28px;">
+    <h3 style="font-family:'Fraunces',serif;font-size:1.15rem;margin-bottom:16px;">⚗️ Pasos para calcular F gravitacional</h3>
+    <div class="steps">
+      <div class="step"><div class="sn sn-gold">1</div><p><strong>Identifica las masas m₁ y m₂</strong> en kilogramos. Gramos ÷ 1000.</p></div>
+      <div class="step"><div class="sn sn-gold">2</div><p><strong>Mide la distancia r en metros</strong> — del centro al centro.</p></div>
+      <div class="step"><div class="sn sn-gold">3</div><p><strong>Sustituye en F = G·m₁·m₂/r²</strong> con G = 6.674 × 10⁻¹¹.</p></div>
+      <div class="step"><div class="sn sn-gold">4</div><p><strong>Verifica: resultado en Newtons</strong> (N = kg·m/s²).</p></div>
     </div>
   </div>
+</section>
 
-  <div class="callout" style="margin-top:28px;">
-    <strong>Relación con las Leyes de Newton:</strong> La 2da Ley (F = ma) combina con la gravitación universal para deducir g = 9.8 m/s². La 3ra Ley explica por qué la Tierra también es "atraída" por ti, aunque no lo notamos por su enorme masa.
-  </div>
-
-  <!-- Calculation steps -->
-  <div style="margin-top:36px;">
-    <h3 style="font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:20px;color:var(--accent1)">⚗️ Pasos para calcular F gravitacional</h3>
-    <ul class="steps">
-      <li><span class="step-num y">1</span><div><strong style="color:var(--text)">Identifica las masas</strong><br><span style="color:var(--muted)">m₁ y m₂ en kilogramos. Si te dan gramos, convierte ÷ 1000.</span></div></li>
-      <li><span class="step-num y">2</span><div><strong style="color:var(--text)">Mide la distancia r</strong><br><span style="color:var(--muted)">En metros, entre los centros de masa de los dos objetos.</span></div></li>
-      <li><span class="step-num y">3</span><div><strong style="color:var(--text)">Aplica la fórmula</strong><br><span style="color:var(--muted)">F = G·m₁·m₂/r². Sustituye G = 6.674 × 10⁻¹¹.</span></div></li>
-      <li><span class="step-num y">4</span><div><strong style="color:var(--text)">Verifica unidades</strong><br><span style="color:var(--muted)">El resultado debe quedar en Newtons (N = kg·m/s²).</span></div></li>
-    </ul>
-  </div>
-</div>
-
+<!-- ═══════ TORQUE ═══════ -->
 <div class="divider"></div>
-
-<!-- ═══════════════ TORQUE ═══════════════ -->
-<div id="torque" class="section fade-in">
-  <div class="section-header">
-    <div class="section-icon icon-pink">⚙️</div>
-    <h2>Torque o Momento de <span style="color:var(--accent3)">Torsión</span></h2>
+<section id="torque" class="sec">
+  <div class="sec-head rev">
+    <div class="sec-tag t-rose">Módulo 2</div>
+    <h2>Torque — <em style="font-style:italic;color:var(--rose)">la fuerza rotacional</em></h2>
+    <p>El mismo principio que te permite abrir una puerta, usar una llave inglesa o pedalear una bicicleta.</p>
   </div>
 
-  <p style="color:var(--muted);max-width:680px;margin-bottom:32px;">
-    El torque es la "fuerza rotacional": indica qué tan eficientemente una fuerza produce rotación en un cuerpo. Es fundamental para entender palancas, llaves, poleas y todo lo que gira.
-  </p>
+  <div class="why rev" style="border-left-color:var(--rose);">
+    <strong>¿Por qué importa?</strong> Las puertas tienen la manija lejos del pivote porque eso <strong>multiplica tu fuerza</strong>. Un brazo largo con la misma fuerza genera más torque — es un superpoder físico en cualquier herramienta.
+  </div>
 
-  <div class="two-col">
-    <div>
-      <div class="banner" style="background:linear-gradient(135deg,rgba(240,96,144,.1),rgba(122,156,255,.08));border-color:rgba(240,96,144,.25);">
-        <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;">Fórmula del Torque</div>
-        <div class="big-f" style="color:var(--accent3)">τ = r × F · sen(θ)</div>
-        <div class="formula-vars" style="justify-content:center">
-          <span class="var-chip"><strong style="color:var(--accent3)">τ</strong> Torque (N·m)</span>
-          <span class="var-chip"><strong>r</strong> Brazo de palanca (m)</span>
-          <span class="var-chip"><strong>F</strong> Fuerza aplicada (N)</span>
-          <span class="var-chip"><strong>θ</strong> Ángulo entre r y F</span>
+  <div class="f-banner rev" style="background:linear-gradient(135deg,rgba(240,96,144,.1),rgba(240,96,144,.04));border:1px solid rgba(240,96,144,.22);">
+    <div class="f-lbl" style="color:var(--rose)">Fórmula del Torque</div>
+    <div class="f-eq" style="color:var(--rose)">τ = r · F · sen(θ)</div>
+    <div class="f-chips">
+      <span class="chip"><b style="color:var(--rose)">τ</b> torque (N·m)</span>
+      <span class="chip"><b>r</b> brazo de palanca (m)</span>
+      <span class="chip"><b>F</b> fuerza (N)</span>
+      <span class="chip"><b>θ</b> ángulo entre r y F — máximo a 90°</span>
+    </div>
+  </div>
+
+  <!-- Interactive lever -->
+  <div class="rev" style="margin-top:24px;">
+    <div class="demo-wrap" style="padding:20px 20px 0;">
+      <canvas id="lever-c" width="620" height="200"></canvas>
+      <div class="lever-ctrl" style="padding-bottom:16px;">
+        <div class="ctrl-g">
+          <span class="ctrl-lbl">F₁ (N)</span>
+          <input type="range" id="f1" min="10" max="100" value="50">
+          <span class="ctrl-val" id="f1v" style="color:var(--gold)">50 N</span>
+        </div>
+        <div class="ctrl-g">
+          <span class="ctrl-lbl">d₁ (m)</span>
+          <input type="range" id="d1" min="0.5" max="4" step="0.1" value="2">
+          <span class="ctrl-val" id="d1v" style="color:var(--gold)">2.0 m</span>
+        </div>
+        <div class="ctrl-g">
+          <span class="ctrl-lbl">F₂ (N)</span>
+          <input type="range" id="f2" min="10" max="100" value="50">
+          <span class="ctrl-val" id="f2v" style="color:var(--teal)">50 N</span>
+        </div>
+        <div class="ctrl-g">
+          <span class="ctrl-lbl">d₂ (m)</span>
+          <input type="range" id="d2" min="0.5" max="4" step="0.1" value="2">
+          <span class="ctrl-val" id="d2v" style="color:var(--teal)">2.0 m</span>
         </div>
       </div>
-      <div class="callout warn">
-        <strong>¡Recuerda!</strong> El torque es <em>máximo</em> cuando la fuerza es perpendicular al brazo (θ = 90°, sen 90° = 1). Si empujas en la dirección del brazo, el torque es 0.
-      </div>
+      <div class="balance" id="bal">⚖️ Equilibrio: τ₁ = τ₂ = 100 N·m</div>
+      <div style="height:12px;"></div>
     </div>
-
-    <!-- SVG: lever / torque diagram -->
-    <div class="diagram-wrap">
-      <svg width="340" height="220" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- beam -->
-        <rect x="30" y="108" width="280" height="8" rx="4" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
-        <!-- pivot -->
-        <polygon points="130,116 160,155 100,155" fill="rgba(240,96,144,.4)" stroke="rgba(240,96,144,.8)" stroke-width="1.5"/>
-        <circle cx="130" cy="116" r="6" fill="var(--accent3)"/>
-        <!-- Force arrow left -->
-        <line x1="60" y1="50" x2="60" y2="105" stroke="rgba(247,201,72,.9)" stroke-width="2.5"/>
-        <polygon points="54,105 66,105 60,118" fill="#f7c948"/>
-        <text x="32" y="40" fill="#f7c948" font-size="13" font-family="Georgia">F₁</text>
-        <!-- Force arrow right (lighter) -->
-        <line x1="260" y1="50" x2="260" y2="105" stroke="rgba(74,240,196,.7)" stroke-width="2"/>
-        <polygon points="254,105 266,105 260,118" fill="#4af0c4"/>
-        <text x="268" y="40" fill="#4af0c4" font-size="13" font-family="Georgia">F₂</text>
-        <!-- r1 dimension -->
-        <line x1="60" y1="165" x2="130" y2="165" stroke="rgba(247,201,72,.5)" stroke-width="1.5"/>
-        <text x="92" y="183" text-anchor="middle" fill="rgba(247,201,72,.8)" font-size="12">r₁</text>
-        <!-- r2 dimension -->
-        <line x1="130" y1="165" x2="260" y2="165" stroke="rgba(74,240,196,.5)" stroke-width="1.5"/>
-        <text x="195" y="183" text-anchor="middle" fill="rgba(74,240,196,.8)" font-size="12">r₂</text>
-        <!-- Pivot label -->
-        <text x="130" y="205" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="11">Pivote</text>
-        <!-- τ label -->
-        <text x="275" y="95" fill="rgba(240,96,144,.9)" font-size="13" font-family="Georgia">τ = r·F</text>
-      </svg>
-      <p class="diagram-caption">Palanca con pivote: cada fuerza genera un torque. El equilibrio ocurre cuando τ₁ = τ₂.</p>
-    </div>
+    <p class="demo-hint">🎚️ Mueve los controles — la palanca responde en tiempo real</p>
   </div>
 
-  <div style="margin-top:36px;">
-    <h3 style="font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:20px;color:var(--accent3)">🔧 Palancas — Tipos y Torque</h3>
-    <div class="card-grid">
-      <div class="card p">
-        <div class="card-label">1er Género</div>
-        <h3>Pivote al centro</h3>
-        <p>Ejemplo: tijeras, balancín. El pivote está entre la fuerza y la carga. Puede dar ventaja o desventaja mecánica.</p>
-      </div>
-      <div class="card p">
-        <div class="card-label">2do Género</div>
-        <h3>Carga al centro</h3>
-        <p>Ejemplo: carretilla, cascanueces. La carga está entre el pivote y la fuerza. Siempre da ventaja mecánica.</p>
-      </div>
-      <div class="card p">
-        <div class="card-label">3er Género</div>
-        <h3>Fuerza al centro</h3>
-        <p>Ejemplo: pinzas, tweezers. La fuerza está entre el pivote y la carga. Multiplica el movimiento, no la fuerza.</p>
-      </div>
+  <div class="g3 rev" style="margin-top:24px;">
+    <div class="card c-rose">
+      <div class="card-lbl lbl-rose">1er Género</div>
+      <h3>Pivote al centro</h3>
+      <p>🎭 Tijeras, balancín. Puede dar ventaja o desventaja mecánica.</p>
+    </div>
+    <div class="card c-rose">
+      <div class="card-lbl lbl-rose">2do Género</div>
+      <h3>Carga al centro</h3>
+      <p>🛻 Carretilla. Siempre ventaja mecánica — F menor que la carga.</p>
+    </div>
+    <div class="card c-rose">
+      <div class="card-lbl lbl-rose">3er Género</div>
+      <h3>Fuerza al centro</h3>
+      <p>🩴 Pinzas, antebrazo. Multiplica velocidad, no fuerza.</p>
     </div>
   </div>
+</section>
 
-  <div class="callout info" style="margin-top:24px;">
-    <strong>Regla de la mano derecha:</strong> Para encontrar la dirección del torque vectorial, apunta los dedos de la mano derecha desde r hacia F y el pulgar señala la dirección de τ.
-  </div>
-</div>
-
+<!-- ═══════ EQUILIBRIO ═══════ -->
 <div class="divider"></div>
-
-<!-- ═══════════════ EQUILIBRIO ═══════════════ -->
-<div id="equilibrio" class="section fade-in">
-  <div class="section-header">
-    <div class="section-icon icon-blue">⚖️</div>
-    <h2>Equilibrio de Cuerpos <span style="color:var(--accent4)">Extensos</span></h2>
+<section id="eq" class="sec">
+  <div class="sec-head rev">
+    <div class="sec-tag t-blue">Módulo 3</div>
+    <h2>Equilibrio de <em style="font-style:italic;color:var(--blue)">Cuerpos Extensos</em></h2>
+    <p>Un puente, un edificio, una grúa — todo necesita cumplir <strong style="color:var(--ink)">dos condiciones simultáneas</strong> o se cae.</p>
   </div>
 
-  <p style="color:var(--muted);max-width:680px;margin-bottom:32px;">
-    Un cuerpo extenso (que tiene tamaño, no es un punto) está en equilibrio cuando ni translada ni rota. Para eso deben cumplirse <strong style="color:var(--text)">dos condiciones simultáneas</strong>.
-  </p>
+  <div class="why rev" style="border-left-color:var(--blue);">
+    <strong>¿Por qué dos condiciones?</strong> Si las fuerzas netas son cero pero los torques no, la estructura <strong>gira y colapsa</strong>. Ambas condiciones son necesarias — sin excepción.
+  </div>
 
-  <div class="two-col">
-    <div class="card b" style="padding:32px;">
-      <div class="card-label">1ª Condición</div>
-      <h3 style="font-size:1.4rem;">Equilibrio de Traslación</h3>
-      <div style="font-family:'Georgia',serif;font-size:2rem;color:var(--accent4);text-align:center;margin:20px 0;">ΣF = 0</div>
-      <p>La suma vectorial de todas las fuerzas que actúan sobre el cuerpo debe ser cero. El cuerpo no acelera en ninguna dirección.</p>
-      <div class="callout info" style="margin-top:16px;font-size:13px;">
-        <strong>En componentes:</strong> ΣFₓ = 0 y ΣFᵧ = 0
-      </div>
+  <div class="g2 rev">
+    <div class="card c-blue" style="padding:30px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔀</div>
+      <div class="card-lbl lbl-blue">1ª Condición</div>
+      <h3 style="font-size:1.5rem;color:var(--blue);">ΣF⃗ = 0</h3>
+      <p style="margin:10px 0 14px;">No hay aceleración lineal. En componentes: ΣFₓ = 0 y ΣFᵧ = 0.</p>
+      <div class="note n-blue">Si falla: el objeto <strong>se traslada</strong> en la dirección de la fuerza neta.</div>
     </div>
-    <div class="card b" style="padding:32px;">
-      <div class="card-label">2ª Condición</div>
-      <h3 style="font-size:1.4rem;">Equilibrio de Rotación</h3>
-      <div style="font-family:'Georgia',serif;font-size:2rem;color:var(--accent4);text-align:center;margin:20px 0;">Στ = 0</div>
-      <p>La suma de todos los torques respecto a cualquier punto de referencia debe ser cero. El cuerpo no gira ni cambia su velocidad angular.</p>
-      <div class="callout info" style="margin-top:16px;font-size:13px;">
-        <strong>Convenio:</strong> torques antihorarios (+), horarios (−)
-      </div>
+    <div class="card c-blue" style="padding:30px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔄</div>
+      <div class="card-lbl lbl-blue">2ª Condición</div>
+      <h3 style="font-size:1.5rem;color:var(--blue);">Στ = 0</h3>
+      <p style="margin:10px 0 14px;">No hay aceleración angular. Antihorario = (+), horario = (−).</p>
+      <div class="note n-blue">Si falla: el objeto <strong>rota</strong> con aceleración angular.</div>
     </div>
   </div>
 
-  <!-- SVG: beam equilibrium -->
-  <div class="diagram-wrap" style="margin-top:28px;">
-    <svg width="500" height="180" viewBox="0 0 500 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- beam -->
-      <rect x="40" y="90" width="420" height="10" rx="5" fill="rgba(122,156,255,.2)" stroke="rgba(122,156,255,.5)" stroke-width="1.5"/>
-      <!-- pivot/support -->
-      <polygon points="250,100 280,140 220,140" fill="rgba(122,156,255,.25)" stroke="rgba(122,156,255,.6)" stroke-width="1.5"/>
-      <rect x="200" y="140" width="100" height="10" rx="3" fill="rgba(255,255,255,.1)"/>
-      <!-- Weight W1 -->
-      <line x1="100" y1="30" x2="100" y2="87" stroke="rgba(247,201,72,.9)" stroke-width="2.5"/>
-      <polygon points="94,87 106,87 100,100" fill="#f7c948"/>
-      <text x="100" y="22" text-anchor="middle" fill="#f7c948" font-size="13" font-weight="bold">W₁</text>
-      <!-- Weight W2 -->
-      <line x1="370" y1="30" x2="370" y2="87" stroke="rgba(240,96,144,.9)" stroke-width="2.5"/>
-      <polygon points="364,87 376,87 370,100" fill="#f06090"/>
-      <text x="370" y="22" text-anchor="middle" fill="#f06090" font-size="13" font-weight="bold">W₂</text>
-      <!-- Normal up -->
-      <line x1="250" y1="100" x2="250" y2="55" stroke="rgba(74,240,196,.7)" stroke-width="2"/>
-      <polygon points="244,55 256,55 250,43" fill="#4af0c4"/>
-      <text x="270" y="53" fill="#4af0c4" font-size="12">N</text>
-      <!-- r1 -->
-      <line x1="100" y1="155" x2="250" y2="155" stroke="rgba(247,201,72,.4)" stroke-width="1.5"/>
-      <text x="175" y="172" text-anchor="middle" fill="rgba(247,201,72,.7)" font-size="12">d₁</text>
-      <!-- r2 -->
-      <line x1="250" y1="155" x2="370" y2="155" stroke="rgba(240,96,144,.4)" stroke-width="1.5"/>
-      <text x="310" y="172" text-anchor="middle" fill="rgba(240,96,144,.7)" font-size="12">d₂</text>
-    </svg>
-    <p class="diagram-caption">Condición 1: N = W₁ + W₂ &nbsp;|&nbsp; Condición 2: W₁·d₁ = W₂·d₂</p>
+  <!-- Equilibrium animation -->
+  <div class="rev" style="margin-top:24px;">
+    <div class="demo-wrap">
+      <canvas id="eq-c" width="700" height="190"></canvas>
+    </div>
+    <p class="demo-hint">⚖️ Animación de equilibrio estático con todas las fuerzas</p>
   </div>
 
-  <div style="margin-top:32px;">
-    <h3 style="font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:20px;color:var(--accent4)">📐 Pasos para resolver equilibrio</h3>
-    <ul class="steps">
-      <li><span class="step-num" style="background:rgba(122,156,255,.2);color:var(--accent4);">1</span><div><strong style="color:var(--text)">Dibuja el diagrama de cuerpo libre</strong><br><span style="color:var(--muted)">Identifica todas las fuerzas: pesos, normales, tensiones, fricciones.</span></div></li>
-      <li><span class="step-num" style="background:rgba(122,156,255,.2);color:var(--accent4);">2</span><div><strong style="color:var(--text)">Elige un punto de referencia para τ</strong><br><span style="color:var(--muted)">Pon el pivote donde haya más fuerzas desconocidas — así eliminas incógnitas.</span></div></li>
-      <li><span class="step-num" style="background:rgba(122,156,255,.2);color:var(--accent4);">3</span><div><strong style="color:var(--text)">Aplica ΣF = 0 y Στ = 0</strong><br><span style="color:var(--muted)">Escribe las ecuaciones y resuelve el sistema. Cuida los signos.</span></div></li>
-      <li><span class="step-num" style="background:rgba(122,156,255,.2);color:var(--accent4);">4</span><div><strong style="color:var(--text)">Verifica</strong><br><span style="color:var(--muted)">Comprueba que las fuerzas y torques efectivamente sumen cero con tu resultado.</span></div></li>
-    </ul>
+  <div class="rev" style="margin-top:28px;">
+    <h3 style="font-family:'Fraunces',serif;font-size:1.15rem;margin-bottom:16px;">📐 Cómo resolver equilibrio</h3>
+    <div class="steps">
+      <div class="step"><div class="sn sn-blue">1</div><p><strong>Dibuja el DCL</strong> — diagrama de cuerpo libre con todas las fuerzas.</p></div>
+      <div class="step"><div class="sn sn-blue">2</div><p><strong>Elige el pivote</strong> donde haya más fuerzas desconocidas — así las eliminas del torque.</p></div>
+      <div class="step"><div class="sn sn-blue">3</div><p><strong>Aplica ΣFₓ=0, ΣFᵧ=0</strong> y <strong>Στ=0</strong> para obtener tus ecuaciones.</p></div>
+      <div class="step"><div class="sn sn-blue">4</div><p><strong>Resuelve y verifica</strong> — comprueba que todo sume realmente cero.</p></div>
+    </div>
   </div>
-</div>
+</section>
 
+<!-- ═══════ ENERGÍA ═══════ -->
 <div class="divider"></div>
-
-<!-- ═══════════════ ENERGÍA ═══════════════ -->
-<div id="energia" class="section fade-in">
-  <div class="section-header">
-    <div class="section-icon icon-green">⚡</div>
-    <h2>Trabajo, Energía <span style="color:var(--accent2)">y Potencia</span></h2>
+<section id="energia" class="sec">
+  <div class="sec-head rev">
+    <div class="sec-tag t-teal">Módulo 4</div>
+    <h2>Trabajo, Energía <em style="font-style:italic;color:var(--teal)">y Potencia</em></h2>
+    <p>La energía no se crea ni se destruye — solo cambia de forma. Ninguna excepción ha sido encontrada jamás.</p>
   </div>
 
-  <p style="color:var(--muted);max-width:680px;margin-bottom:36px;">
-    Estos tres conceptos están íntimamente relacionados y son el corazón de la mecánica. El trabajo conecta las fuerzas con los cambios de energía, y la potencia indica la rapidez con que se realiza.
-  </p>
+  <div class="why rev" style="border-left-color:var(--teal);">
+    <strong>¿Por qué es extraordinario?</strong> La conservación de energía es una de las leyes más fundamentales del universo. Cuando un skater baja una rampa, toda la energía potencial se convierte en cinética más calor. <strong>Nada se pierde — todo se redistribuye.</strong>
+  </div>
 
-  <div class="card-grid">
-    <div class="card g" style="padding:28px 28px 32px;">
-      <div class="card-label">Trabajo</div>
-      <h3>W = F · d · cos(θ)</h3>
-      <p>El trabajo es la transferencia de energía mediante una fuerza. Solo hay trabajo si hay desplazamiento en la dirección de la fuerza.</p>
-      <div class="formula-box" style="margin-top:20px;">
-        <div class="formula" style="color:var(--accent2);">W = F · d · cos θ</div>
-        <div class="formula-vars">
-          <span class="var-chip"><strong>W</strong> Trabajo (J = N·m)</span>
-          <span class="var-chip"><strong>d</strong> Desplazamiento (m)</span>
-          <span class="var-chip"><strong>θ</strong> Ángulo F con d</span>
-        </div>
-      </div>
+  <!-- Energy animation -->
+  <div class="rev">
+    <div class="demo-wrap">
+      <canvas id="en-c" width="700" height="190"></canvas>
     </div>
+    <p class="demo-hint">🎿 La energía total se conserva — mira las barras Ep, Ec y Et</p>
+  </div>
 
-    <div class="card g" style="padding:28px 28px 32px;">
-      <div class="card-label">Energía Cinética y Potencial</div>
-      <h3>Formas de Energía Mecánica</h3>
-      <p>La energía se conserva: puede cambiar de forma pero no se crea ni destruye (en sistemas sin fricción).</p>
-      <div class="formula-box" style="margin-top:20px;">
-        <div class="formula" style="color:var(--accent2);font-size:1.2rem;">Ec = ½mv² &nbsp; Ep = mgh</div>
-        <div class="formula-vars">
-          <span class="var-chip"><strong>m</strong> masa (kg)</span>
-          <span class="var-chip"><strong>v</strong> velocidad (m/s)</span>
-          <span class="var-chip"><strong>h</strong> altura (m)</span>
-        </div>
-      </div>
+  <div class="g3 rev" style="margin-top:24px;">
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Trabajo</div>
+      <h3>W = F · d · cos θ</h3>
+      <p>Solo hay trabajo si hay desplazamiento <em>en la dirección de la fuerza</em>. Si θ=90°, W=0.</p>
+      <div class="f-inline"><div class="eq" style="font-size:1.2rem;">W (J = N·m)</div></div>
     </div>
-
-    <div class="card g" style="padding:28px 28px 32px;">
-      <div class="card-label">Potencia</div>
-      <h3>P = W / t</h3>
-      <p>La potencia mide la rapidez con que se realiza trabajo. Un motor potente hace el mismo trabajo en menos tiempo.</p>
-      <div class="formula-box" style="margin-top:20px;">
-        <div class="formula" style="color:var(--accent2);">P = W/t = F·v</div>
-        <div class="formula-vars">
-          <span class="var-chip"><strong>P</strong> Potencia (W = J/s)</span>
-          <span class="var-chip"><strong>t</strong> tiempo (s)</span>
-          <span class="var-chip"><strong>1 HP = 746 W</strong></span>
-        </div>
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Energías Mecánicas</div>
+      <h3>Cinética y Potencial</h3>
+      <div class="f-inline">
+        <div class="eq" style="font-size:1.1rem;">Ec = ½mv²</div>
       </div>
+      <div class="f-inline">
+        <div class="eq" style="font-size:1.1rem;">Ep = mgh</div>
+      </div>
+      <p style="font-size:13px;">Ec + Ep = constante (sin fricción).</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Potencia</div>
+      <h3>P = W / t = F · v</h3>
+      <p>Potencia no es hacer más trabajo — es hacerlo <em>más rápido</em>. Unidad: Watt (W = J/s).</p>
+      <div class="note n-teal" style="margin-top:10px;font-size:12.5px;">1 HP = 746 W</div>
     </div>
   </div>
 
-  <!-- Theorem of work and energy -->
-  <div class="banner" style="background:linear-gradient(135deg,rgba(74,240,196,.1),rgba(122,156,255,.08));border-color:rgba(74,240,196,.25);margin-top:36px;">
-    <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;">Teorema Trabajo — Energía</div>
-    <div class="big-f" style="color:var(--accent2);">W_neto = ΔEc = Ec_f − Ec_i</div>
-    <p style="color:var(--muted);max-width:480px;margin:8px auto 0;font-size:14px;">El trabajo neto realizado sobre un objeto es igual al cambio en su energía cinética. Esto une directamente las fuerzas (Newton) con la energía.</p>
+  <div class="f-banner rev" style="background:linear-gradient(135deg,rgba(74,240,196,.08),rgba(123,156,255,.05));border:1px solid rgba(74,240,196,.22);margin-top:0;">
+    <div class="f-lbl" style="color:var(--teal)">✨ Teorema Trabajo — Energía</div>
+    <div class="f-eq" style="color:var(--teal)">W_neto = ΔEc = Ec_f − Ec_i</div>
+    <p style="color:var(--muted);max-width:460px;margin:0 auto;font-size:13.5px;line-height:1.7;">El trabajo neto es igual al cambio en energía cinética. Úsalo para calcular velocidades sin cinemática. 🚀</p>
   </div>
 
-  <!-- Comparison table -->
-  <div style="margin-top:36px;overflow-x:auto;">
-    <h3 style="font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:20px;color:var(--accent2)">📊 Resumen: Trabajo, Energía y Potencia</h3>
+  <div class="t-wrap rev">
     <table>
-      <thead>
-        <tr>
-          <th>Magnitud</th>
-          <th>Símbolo</th>
-          <th>Fórmula principal</th>
-          <th>Unidad SI</th>
-          <th>Equivalencia</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Magnitud</th><th>Símbolo</th><th>Fórmula</th><th>Unidad SI</th></tr></thead>
       <tbody>
-        <tr><td><strong>Trabajo</strong></td><td>W</td><td>F · d · cos θ</td><td>Joule (J)</td><td>N · m</td></tr>
-        <tr><td><strong>Energía Cinética</strong></td><td>Ec</td><td>½ m v²</td><td>Joule (J)</td><td>kg · m²/s²</td></tr>
-        <tr><td><strong>Energía Potencial Grav.</strong></td><td>Ep</td><td>m · g · h</td><td>Joule (J)</td><td>kg · m²/s²</td></tr>
-        <tr><td><strong>Potencia</strong></td><td>P</td><td>W / t</td><td>Watt (W)</td><td>J/s</td></tr>
-        <tr><td><strong>Potencia</strong></td><td>P</td><td>F · v</td><td>Watt (W)</td><td>N · m/s</td></tr>
+        <tr><td><strong>Trabajo</strong></td><td>W</td><td>F·d·cosθ</td><td>Joule (J = N·m)</td></tr>
+        <tr><td><strong>E. Cinética</strong></td><td>Ec</td><td>½mv²</td><td>Joule (J)</td></tr>
+        <tr><td><strong>E. Potencial</strong></td><td>Ep</td><td>mgh</td><td>Joule (J)</td></tr>
+        <tr><td><strong>Potencia</strong></td><td>P</td><td>W/t = F·v</td><td>Watt (W = J/s)</td></tr>
       </tbody>
     </table>
   </div>
-</div>
+</section>
 
+<!-- ═══════ LAB ═══════ -->
 <div class="divider"></div>
-
-<!-- ═══════════════ EXPERIMENTOS ═══════════════ -->
-<div id="experimentos" class="section fade-in">
-  <div class="section-header">
-    <div class="section-icon icon-green">🔬</div>
-    <h2>Habilidades <span style="color:var(--accent2)">Experimentales</span></h2>
+<section id="lab" class="sec">
+  <div class="sec-head rev">
+    <div class="sec-tag t-teal">Módulo 5</div>
+    <h2>Habilidades <em style="font-style:italic;color:var(--teal)">Experimentales</em></h2>
+    <p>Las fórmulas son modelos. Los experimentos verifican (o derrumban) esos modelos.</p>
   </div>
 
-  <p style="color:var(--muted);max-width:680px;margin-bottom:36px;">
-    La física se verifica experimentalmente. Estos son los pilares de la investigación científica que debes dominar para el laboratorio.
-  </p>
-
-  <div class="card-grid">
-    <div class="exp-card">
-      <h3>🎯 Variables Físicas</h3>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Antes de medir, identifica qué variables describen el fenómeno. Clasifícalas:</p>
-      <ul class="steps" style="gap:10px;">
-        <li><span class="step-num g">V</span><div style="font-size:13px;color:var(--muted)"><strong style="color:var(--text)">Independiente:</strong> la que tú controlas y cambias deliberadamente.</div></li>
-        <li><span class="step-num g">V</span><div style="font-size:13px;color:var(--muted)"><strong style="color:var(--text)">Dependiente:</strong> la que mides como resultado.</div></li>
-        <li><span class="step-num g">V</span><div style="font-size:13px;color:var(--muted)"><strong style="color:var(--text)">Controlada:</strong> las que mantienes constantes.</div></li>
-      </ul>
-    </div>
-
-    <div class="exp-card">
-      <h3>📏 Instrumentos de Medición</h3>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Cada magnitud tiene su instrumento. Conoce la precisión de cada uno:</p>
-      <table style="font-size:13px;">
-        <thead><tr><th>Magnitud</th><th>Instrumento</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Longitud</strong></td><td style="color:var(--muted)">Regla, vernier, micrómetro</td></tr>
-          <tr><td><strong>Masa</strong></td><td style="color:var(--muted)">Balanza de platillos / digital</td></tr>
-          <tr><td><strong>Tiempo</strong></td><td style="color:var(--muted)">Cronómetro, fotocompuerta</td></tr>
-          <tr><td><strong>Fuerza</strong></td><td style="color:var(--muted)">Dinamómetro (newtonómetro)</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="exp-card">
-      <h3>📋 Recolección Sistemática</h3>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Los datos deben registrarse con orden y rigor:</p>
-      <ul class="steps" style="gap:10px;">
-        <li><span class="step-num" style="background:rgba(74,240,196,.15);color:var(--accent2);">1</span><div style="font-size:13px;color:var(--muted)">Usa tablas con unidades claramente indicadas.</div></li>
-        <li><span class="step-num" style="background:rgba(74,240,196,.15);color:var(--accent2);">2</span><div style="font-size:13px;color:var(--muted)">Repite cada medición al menos 3 veces.</div></li>
-        <li><span class="step-num" style="background:rgba(74,240,196,.15);color:var(--accent2);">3</span><div style="font-size:13px;color:var(--muted)">Calcula promedios y estima el error/incertidumbre.</div></li>
-        <li><span class="step-num" style="background:rgba(74,240,196,.15);color:var(--accent2);">4</span><div style="font-size:13px;color:var(--muted)">Compara con el valor teórico y explica diferencias.</div></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="callout" style="margin-top:28px;">
-    <strong>Para verificar hipótesis:</strong> compara tu valor experimental con el teórico calculando el <em>error porcentual</em>: <br>
-    <span style="font-family:Georgia;font-size:1.1rem;color:var(--text);display:block;margin-top:8px;text-align:center;">
-      Error% = |valor_exp − valor_teo| / valor_teo × 100%
-    </span>
-  </div>
-
-  <!-- Mini checklist -->
-  <div style="margin-top:36px;">
-    <h3 style="font-family:'Fraunces',serif;font-size:1.2rem;margin-bottom:20px;color:var(--accent2)">✅ Checklist del Informe de Laboratorio</h3>
-    <div class="card-grid">
-      <div class="card g">
-        <div class="card-label">Antes del experimento</div>
-        <h3>Planificación</h3>
-        <p>Planteamiento del problema · Hipótesis · Identificación de variables · Lista de materiales e instrumentos.</p>
+  <div class="g2 rev">
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Variables</div>
+      <h3>Las tres que siempre existen</h3>
+      <div class="steps" style="margin-top:12px;">
+        <div class="step"><div class="sn sn-teal" style="font-size:9px;font-weight:700;">IND</div><p><strong>Independiente</strong> La que tú controlas. La "causa".</p></div>
+        <div class="step"><div class="sn sn-teal" style="font-size:9px;font-weight:700;">DEP</div><p><strong>Dependiente</strong> La que mides. El "efecto".</p></div>
+        <div class="step"><div class="sn sn-teal" style="font-size:9px;font-weight:700;">CTL</div><p><strong>Controlada</strong> Lo que mantienes constante — sin esto no puedes saber qué causó qué.</p></div>
       </div>
-      <div class="card g">
-        <div class="card-label">Durante el experimento</div>
-        <h3>Procedimiento</h3>
-        <p>Paso a paso detallado · Tabla de datos con unidades · Observaciones importantes · Medidas de seguridad.</p>
-      </div>
-      <div class="card g">
-        <div class="card-label">Después del experimento</div>
-        <h3>Análisis y Conclusiones</h3>
-        <p>Cálculos y gráficas · Comparación con teoría · Error porcentual · Fuentes de error · Conclusión final.</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Instrumentos</div>
+      <h3>El correcto para cada magnitud</h3>
+      <div class="t-wrap" style="margin-top:12px;">
+        <table>
+          <thead><tr><th>Magnitud</th><th>Instrumento</th><th>Precisión</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Longitud</strong></td><td>Vernier</td><td>0.1 mm</td></tr>
+            <tr><td><strong>Masa</strong></td><td>Balanza</td><td>0.001 g</td></tr>
+            <tr><td><strong>Tiempo</strong></td><td>Cronómetro</td><td>0.01 s</td></tr>
+            <tr><td><strong>Fuerza</strong></td><td>Dinamómetro</td><td>0.1 N</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-</div>
 
+  <div class="f-banner rev" style="background:rgba(0,0,0,.3);border:1px solid var(--border);margin-top:24px;">
+    <div class="f-lbl" style="color:var(--teal)">Error Porcentual</div>
+    <div class="f-eq" style="color:var(--teal);font-size:1.6rem;">Error% = |exp − teórico| / teórico × 100%</div>
+    <p style="color:var(--muted);font-size:13.5px;">Error &lt;5% = experimento exitoso. Los errores no son fracasos — son información.</p>
+  </div>
+
+  <div class="g3 rev" style="margin-top:0;">
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Antes</div>
+      <h3>📋 Planear</h3>
+      <p>Problema · Hipótesis · Variables · Materiales · Tabla de datos</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Durante</div>
+      <h3>⚗️ Medir</h3>
+      <p>Repetir ≥3 veces · Unidades siempre · Anotar lo inesperado · Promediar</p>
+    </div>
+    <div class="card c-teal">
+      <div class="card-lbl lbl-teal">Después</div>
+      <h3>📊 Analizar</h3>
+      <p>Graficar · Error% · Comparar con teoría · Identificar fuentes de error · Concluir</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ QUIZ ═══════ -->
 <div class="divider"></div>
-
-<!-- ═══════════════ REPASO RÁPIDO ═══════════════ -->
-<div class="section fade-in">
-  <div class="section-header">
-    <div class="section-icon icon-yellow">🚀</div>
-    <h2>Repaso <span>Rápido</span> — Todo en uno</h2>
+<section class="sec">
+  <div class="sec-head rev">
+    <div class="sec-tag t-gold">Autoevaluación</div>
+    <h2>¿Cuánto <em style="font-style:italic;color:var(--gold)">aprendiste?</em></h2>
   </div>
-
-  <div class="card-grid">
-    <div class="card y">
-      <div class="card-label">Gravitación</div>
-      <h3>F = G·m₁·m₂/r²</h3>
-      <p>G = 6.674×10⁻¹¹ · Cerca de la Tierra: g ≈ 9.8 m/s² · F = mg</p>
+  <div class="g2 rev">
+    <div class="quiz-card">
+      <p class="quiz-q">🌍 Si duplicas la distancia entre dos planetas, ¿cómo cambia la fuerza gravitacional?</p>
+      <div class="opts">
+        <button class="opt" onclick="qa(this,'no','Incorrecto — recuerda que es 1/r², no 1/r.')">Se reduce a la mitad</button>
+        <button class="opt" onclick="qa(this,'ok','¡Correcto! F ∝ 1/r². Si r×2, entonces F ÷ 4.')">Se reduce a la cuarta parte</button>
+        <button class="opt" onclick="qa(this,'no','No — sería si fuera 1/r³.')">Se reduce a la octava parte</button>
+      </div>
+      <div class="fb" id="q1fb"></div>
     </div>
-    <div class="card p">
-      <div class="card-label">Torque</div>
-      <h3>τ = r · F · sen θ</h3>
-      <p>Máximo cuando θ = 90° · Palancas: τ₁ = τ₂ en equilibrio · Unidad: N·m</p>
+    <div class="quiz-card">
+      <p class="quiz-q">⚙️ ¿Por qué es más fácil girar un tornillo con una llave más larga?</p>
+      <div class="opts">
+        <button class="opt" onclick="qb(this,'no','La fuerza aplicada es la misma — lo que cambia es el torque.')">Porque aplicas más fuerza</button>
+        <button class="opt" onclick="qb(this,'ok','¡Exacto! τ = r·F. Mayor brazo r → mayor torque con igual fuerza.')">Porque aumenta el brazo r → mayor τ</button>
+        <button class="opt" onclick="qb(this,'no','La fricción no es el factor principal aquí.')">Porque hay menos fricción</button>
+      </div>
+      <div class="fb" id="q2fb"></div>
     </div>
-    <div class="card b">
-      <div class="card-label">Equilibrio</div>
-      <h3>ΣF = 0 y Στ = 0</h3>
-      <p>Dos condiciones simultáneas · Diagrama de cuerpo libre es clave · Elige bien el pivote</p>
+    <div class="quiz-card">
+      <p class="quiz-q">⚡ Una pelota cae desde 10m. ¿Qué pasa con la energía?</p>
+      <div class="opts">
+        <button class="opt" onclick="qc(this,'ok','¡Correcto! Toda la Ep se convierte en Ec — la energía total se conserva.')">Toda la Ep se convierte en Ec</button>
+        <button class="opt" onclick="qc(this,'no','Incorrecto — la masa no afecta la velocidad de caída libre.')">Una pelota más pesada llega más rápido</button>
+        <button class="opt" onclick="qc(this,'no','No — en caída libre ideal la energía se conserva.')">Se pierde energía en la caída</button>
+      </div>
+      <div class="fb" id="q3fb"></div>
     </div>
-    <div class="card g">
-      <div class="card-label">Energía & Potencia</div>
-      <h3>W = Fd·cosθ · P = W/t</h3>
-      <p>Ec = ½mv² · Ep = mgh · Teorema W-E: W_neto = ΔEc</p>
+    <div class="quiz-card">
+      <p class="quiz-q">⚖️ Para equilibrio de un cuerpo extenso, ¿qué condiciones son necesarias?</p>
+      <div class="opts">
+        <button class="opt" onclick="qd(this,'no','Solo ΣF=0 evita traslación — el cuerpo aún podría rotar.')">Solo ΣF = 0</button>
+        <button class="opt" onclick="qd(this,'no','Solo Στ=0 evita rotación — el cuerpo aún podría trasladarse.')">Solo Στ = 0</button>
+        <button class="opt" onclick="qd(this,'ok','¡Perfecto! Ambas condiciones son necesarias simultáneamente.')">ΣF = 0 Y Στ = 0 al mismo tiempo</button>
+      </div>
+      <div class="fb" id="q4fb"></div>
     </div>
   </div>
+</section>
 
-  <div class="callout info" style="margin-top:28px;font-size:14px;">
-    <strong>💡 Tip de estudio:</strong> Para cada fórmula, practica primero despejando cada variable. Luego busca un ejemplo real cotidiano (puente, bicicleta, ascensor) que ilustre el concepto. La física está en todas partes en Colombia: el puente Pumarejo, el Cable Aéreo de Manizales, el Metro de Medellín… ¡todos usan estas leyes!
-  </div>
-</div>
-
-<!-- ═══════════════ FOOTER ═══════════════ -->
+<!-- FOOTER -->
 <footer>
-  <p>Hecho con 🤍 para estudiantes colombianos &nbsp;·&nbsp; <strong>Física de Bachillerato</strong></p>
-  <p style="margin-top:6px;font-size:12px;opacity:.5;">Gravitación · Torque · Equilibrio · Energía · Métodos Experimentales</p>
+  <p class="ft-big">La física no es difícil.<br>Es <em>fascinante.</em></p>
+  <p>Hecha para estudiantes colombianos 🇨🇴 · Gravitación · Torque · Equilibrio · Energía</p>
 </footer>
 
 <script>
-  // Fade-in on scroll
-  const observer = new IntersectionObserver(entries => {
+// ── SCROLL PROGRESS ──
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  prog.style.width = (scrollY / (document.body.scrollHeight - innerHeight) * 100) + '%';
+});
+
+// ── ACTIVE NAV ──
+const navLinks = document.querySelectorAll('nav a[href^="#"]');
+new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const l = document.querySelector(`nav a[href="#${e.target.id}"]`);
+      if (l) l.classList.add('active');
+    }
+  });
+}, { threshold: .3 }).observe(document.getElementById('hero'));
+['grav','torque','eq','energia','lab'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
+        navLinks.forEach(a => a.classList.remove('active'));
+        const l = document.querySelector(`nav a[href="#${id}"]`);
+        if (l) l.classList.add('active');
       }
     });
-  }, { threshold: 0.08 });
+  }, { threshold: .25 }).observe(el);
+});
 
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+// ── REVEAL ──
+new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: .07 }).observe(document.body);
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: .07 });
+document.querySelectorAll('.rev').forEach(el => revObs.observe(el));
+
+// ── STARFIELD ──
+const sf = document.getElementById('stars');
+const sc = sf.getContext('2d');
+function resizeSF() { sf.width = innerWidth; sf.height = innerHeight; }
+resizeSF(); window.addEventListener('resize', resizeSF);
+const stars = Array.from({length:160}, () => ({
+  x: Math.random()*1, y: Math.random()*1,
+  r: Math.random()*1.4+.3, a: Math.random(), sp: Math.random()*.0025+.0008
+}));
+(function drawSF() {
+  sf.width = innerWidth; sf.height = innerHeight;
+  sc.clearRect(0,0,sf.width,sf.height);
+  stars.forEach(s => {
+    s.a += s.sp; if(s.a>1) s.a=0;
+    sc.beginPath();
+    sc.arc(s.x*sf.width, s.y*sf.height, s.r, 0, Math.PI*2);
+    sc.fillStyle = `rgba(255,255,255,${s.a*.85})`;
+    sc.fill();
+  });
+  requestAnimationFrame(drawSF);
+})();
+
+// ── GRAVITY DEMO ──
+(function() {
+  const c = document.getElementById('grav-c');
+  const ctx = c.getContext('2d');
+  c.width = c.parentElement.offsetWidth || 460;
+  c.height = 260;
+  const bodies = [
+    { x: c.width*.35, y: c.height*.5, m: 55, col: '#f7c948', name: 'Tierra' },
+    { x: c.width*.68, y: c.height*.5, m: 18, col: '#4af0c4', name: 'Luna' }
+  ];
+  const G = 14000;
+
+  c.addEventListener('click', e => {
+    const r = c.getBoundingClientRect();
+    const x = (e.clientX-r.left)*(c.width/r.width);
+    const y = (e.clientY-r.top)*(c.height/r.height);
+    let closest=null, minD=45;
+    bodies.forEach(b => { const d=Math.hypot(b.x-x,b.y-y); if(d<minD){minD=d;closest=b;} });
+    if (closest) closest.m = Math.min(closest.m+18, 160);
+    else bodies.push({x,y,m:22,col:'#f06090',name:'Masa'});
+  });
+
+  (function loop() {
+    ctx.clearRect(0,0,c.width,c.height);
+    // force lines
+    for(let i=0;i<bodies.length;i++) {
+      for(let j=i+1;j<bodies.length;j++) {
+        const dx=bodies[j].x-bodies[i].x, dy=bodies[j].y-bodies[i].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<15) continue;
+        const F = G*bodies[i].m*bodies[j].m/(dist*dist);
+        const al = Math.min(F/250,.7);
+        ctx.beginPath();
+        ctx.moveTo(bodies[i].x,bodies[i].y);
+        ctx.lineTo(bodies[j].x,bodies[j].y);
+        ctx.strokeStyle=`rgba(247,201,72,${al})`;
+        ctx.lineWidth=Math.min(F/70,3);
+        ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+        if(F>4) {
+          ctx.fillStyle=`rgba(247,201,72,.7)`;
+          ctx.font='bold 11px JetBrains Mono,monospace';
+          ctx.textAlign='center';
+          ctx.fillText(`F≈${F.toFixed(0)}N`, (bodies[i].x+bodies[j].x)/2, (bodies[i].y+bodies[j].y)/2-6);
+        }
+      }
+    }
+    // bodies
+    bodies.forEach(b => {
+      const rad=Math.sqrt(b.m)*2.1;
+      ctx.beginPath(); ctx.arc(b.x,b.y,rad,0,Math.PI*2);
+      const g=ctx.createRadialGradient(b.x-rad*.3,b.y-rad*.3,0,b.x,b.y,rad);
+      g.addColorStop(0,'#fff'); g.addColorStop(.4,b.col); g.addColorStop(1,b.col+'30');
+      ctx.fillStyle=g; ctx.shadowBlur=18; ctx.shadowColor=b.col; ctx.fill(); ctx.shadowBlur=0;
+      ctx.fillStyle='#fff'; ctx.font=`bold ${Math.max(10,rad*.48)}px DM Sans,sans-serif`;
+      ctx.textAlign='center';
+      ctx.fillText(b.name, b.x, b.y+rad+14);
+      ctx.fillStyle=b.col; ctx.font='10px JetBrains Mono,monospace';
+      ctx.fillText(`m=${b.m}`, b.x, b.y+4);
+    });
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ── LEVER DEMO ──
+(function() {
+  const c = document.getElementById('lever-c');
+  const ctx = c.getContext('2d');
+  c.width = Math.min(620, window.innerWidth-60);
+  c.height = 200;
+
+  const v = {f1:50,d1:2,f2:50,d2:2};
+  ['f1','d1','f2','d2'].forEach(k => {
+    document.getElementById(k).addEventListener('input', function() {
+      v[k]=parseFloat(this.value);
+      const disp = k.startsWith('f') ? this.value+' N' : parseFloat(this.value).toFixed(1)+' m';
+      document.getElementById(k+'v').textContent=disp;
+    });
+  });
+
+  let tilt=0;
+  (function loop() {
+    ctx.clearRect(0,0,c.width,c.height);
+    const W=c.width,H=c.height,px=W/2,py=H*.46,bLen=W*.76,scale=bLen/8;
+    const tau1=v.f1*v.d1, tau2=v.f2*v.d2;
+    const diff=(tau1-tau2)/Math.max(tau1+tau2,1);
+    tilt+=(diff*.33-tilt)*.08;
+
+    ctx.save(); ctx.translate(px,py); ctx.rotate(tilt);
+    // beam
+    const grd=ctx.createLinearGradient(-bLen/2,0,bLen/2,0);
+    grd.addColorStop(0,'rgba(123,156,255,.35)');
+    grd.addColorStop(.5,'rgba(123,156,255,.8)');
+    grd.addColorStop(1,'rgba(123,156,255,.35)');
+    ctx.beginPath(); ctx.roundRect(-bLen/2,-5,bLen,10,4);
+    ctx.fillStyle=grd; ctx.shadowBlur=8; ctx.shadowColor='#7b9cff'; ctx.fill(); ctx.shadowBlur=0;
+
+    // left mass
+    const lx=-v.d1*scale, lr=Math.sqrt(v.f1)*1.8;
+    ctx.beginPath(); ctx.arc(lx,-5-lr,lr,0,Math.PI*2);
+    const lg=ctx.createRadialGradient(lx-4,-5-lr-4,0,lx,-5-lr,lr);
+    lg.addColorStop(0,'#fff'); lg.addColorStop(1,'#f7c948');
+    ctx.fillStyle=lg; ctx.shadowBlur=14; ctx.shadowColor='#f7c948'; ctx.fill(); ctx.shadowBlur=0;
+    ctx.fillStyle='#111'; ctx.font=`bold ${Math.max(9,lr*.45)}px JetBrains Mono,monospace`; ctx.textAlign='center';
+    ctx.fillText(`${v.f1}N`, lx, -5-lr+lr*.35);
+
+    // right mass
+    const rx=v.d2*scale, rr=Math.sqrt(v.f2)*1.8;
+    ctx.beginPath(); ctx.arc(rx,-5-rr,rr,0,Math.PI*2);
+    const rg=ctx.createRadialGradient(rx-4,-5-rr-4,0,rx,-5-rr,rr);
+    rg.addColorStop(0,'#fff'); rg.addColorStop(1,'#4af0c4');
+    ctx.fillStyle=rg; ctx.shadowBlur=14; ctx.shadowColor='#4af0c4'; ctx.fill(); ctx.shadowBlur=0;
+    ctx.fillStyle='#111'; ctx.font=`bold ${Math.max(9,rr*.45)}px JetBrains Mono,monospace`; ctx.textAlign='center';
+    ctx.fillText(`${v.f2}N`, rx, -5-rr+rr*.35);
+    ctx.restore();
+
+    // pivot
+    ctx.beginPath(); ctx.moveTo(px,py+5); ctx.lineTo(px-16,py+40); ctx.lineTo(px+16,py+40); ctx.closePath();
+    ctx.fillStyle='rgba(123,156,255,.45)'; ctx.strokeStyle='#7b9cff'; ctx.lineWidth=1.5; ctx.fill(); ctx.stroke();
+    ctx.fillStyle='rgba(123,156,255,.3)'; ctx.beginPath(); ctx.roundRect(px-36,py+40,72,8,3); ctx.fill();
+
+    // tau labels
+    ctx.font='bold 12px JetBrains Mono,monospace';
+    ctx.textAlign='left'; ctx.fillStyle='#f7c948';
+    ctx.fillText(`τ₁ = ${tau1.toFixed(0)} N·m`, 10, 24);
+    ctx.textAlign='right'; ctx.fillStyle='#4af0c4';
+    ctx.fillText(`τ₂ = ${tau2.toFixed(0)} N·m`, W-10, 24);
+
+    // balance text
+    const bal=document.getElementById('bal');
+    const delta=Math.abs(tau1-tau2);
+    if(delta<5){bal.style.color='#4af0c4';bal.textContent=`⚖️ EQUILIBRIO — τ₁ = τ₂ = ${tau1.toFixed(0)} N·m`;}
+    else if(tau1>tau2){bal.style.color='#f7c948';bal.textContent=`↙ Rota izquierda — τ₁(${tau1.toFixed(0)}) > τ₂(${tau2.toFixed(0)})`;}
+    else{bal.style.color='#f06090';bal.textContent=`↘ Rota derecha — τ₂(${tau2.toFixed(0)}) > τ₁(${tau1.toFixed(0)})`;}
+
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ── EQUILIBRIUM DEMO ──
+(function() {
+  const c=document.getElementById('eq-c');
+  const ctx=c.getContext('2d');
+  c.width=Math.min(700,window.innerWidth-60); c.height=190;
+  let t=0;
+  (function loop() {
+    ctx.clearRect(0,0,c.width,c.height); t+=.013;
+    const W=c.width,H=c.height,bLen=W*.78,bx=W*.11,by=H*.52,bh=11,px=W*.5;
+
+    // beam
+    const gr=ctx.createLinearGradient(bx,0,bx+bLen,0);
+    gr.addColorStop(0,'rgba(123,156,255,.25)'); gr.addColorStop(.5,'rgba(123,156,255,.7)'); gr.addColorStop(1,'rgba(123,156,255,.25)');
+    ctx.beginPath(); ctx.roundRect(bx,by-bh/2,bLen,bh,5);
+    ctx.fillStyle=gr; ctx.shadowBlur=6; ctx.shadowColor='#7b9cff'; ctx.fill(); ctx.shadowBlur=0;
+
+    // pivot
+    ctx.beginPath(); ctx.moveTo(px,by+bh/2); ctx.lineTo(px-15,by+42); ctx.lineTo(px+15,by+42); ctx.closePath();
+    ctx.fillStyle='rgba(123,156,255,.4)'; ctx.strokeStyle='#7b9cff'; ctx.lineWidth=1.5; ctx.fill(); ctx.stroke();
+    ctx.fillStyle='rgba(123,156,255,.25)'; ctx.beginPath(); ctx.roundRect(px-38,by+42,76,8,3); ctx.fill();
+
+    // normal up — pulsing
+    const na=.45+.3*Math.sin(t*2);
+    ctx.strokeStyle=`rgba(74,240,196,${na})`; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(px,by+40); ctx.lineTo(px,by-60); ctx.stroke();
+    ctx.fillStyle=`rgba(74,240,196,${na})`;
+    ctx.beginPath(); ctx.moveTo(px-6,by-48); ctx.lineTo(px+6,by-48); ctx.lineTo(px,by-62); ctx.closePath(); ctx.fill();
+    ctx.font='bold 12px JetBrains Mono'; ctx.textAlign='center'; ctx.fillStyle=`rgba(74,240,196,${na})`;
+    ctx.fillText('N', px+20, by-50);
+
+    // w1
+    const w1x=bx+bLen*.18;
+    ctx.strokeStyle='rgba(247,201,72,.9)'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(w1x,by-bh/2); ctx.lineTo(w1x,by+44); ctx.stroke();
+    ctx.fillStyle='#f7c948'; ctx.beginPath();
+    ctx.moveTo(w1x-6,by+32); ctx.lineTo(w1x+6,by+32); ctx.lineTo(w1x,by+46); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='rgba(247,201,72,.18)'; ctx.strokeStyle='#f7c948'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.roundRect(w1x-18,by-50,36,34,6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#f7c948'; ctx.font='bold 11px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText('W₁', w1x, by-28);
+
+    // w2
+    const w2x=bx+bLen*.78;
+    ctx.strokeStyle='rgba(240,96,144,.9)'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(w2x,by-bh/2); ctx.lineTo(w2x,by+44); ctx.stroke();
+    ctx.fillStyle='#f06090'; ctx.beginPath();
+    ctx.moveTo(w2x-6,by+32); ctx.lineTo(w2x+6,by+32); ctx.lineTo(w2x,by+46); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='rgba(240,96,144,.18)'; ctx.strokeStyle='#f06090'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.roundRect(w2x-18,by-50,36,34,6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#f06090'; ctx.font='bold 11px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText('W₂', w2x, by-28);
+
+    // labels
+    ctx.font='12px DM Sans'; ctx.textAlign='center';
+    ctx.fillStyle='rgba(74,240,196,.7)'; ctx.fillText('ΣF=0 → N = W₁ + W₂', W/2, H-26);
+    ctx.fillStyle='rgba(247,201,72,.6)'; ctx.fillText('Στ=0 → W₁·d₁ = W₂·d₂', W/2, H-8);
+
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ── ENERGY DEMO ──
+(function() {
+  const c=document.getElementById('en-c');
+  const ctx=c.getContext('2d');
+  c.width=Math.min(700,window.innerWidth-60); c.height=190;
+  const W=c.width,H=c.height,fl=H-28,r=17;
+  let bx=80,by=38,vx=2.3,vy=0;
+  (function loop() {
+    ctx.clearRect(0,0,W,H);
+    vy+=.28; bx+=vx; by+=vy;
+    if(by+r>=fl){by=fl-r;vy*=-.91;}
+    if(bx-r<0){bx=r;vx=Math.abs(vx);}
+    if(bx+r>W){bx=W-r;vx=-Math.abs(vx);}
+
+    // floor
+    ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(0,fl,W,H-fl);
+    ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,fl); ctx.lineTo(W,fl); ctx.stroke();
+
+    // bars
+    const maxH=H-46,Ep=.28*Math.max(fl-r-by,0),Ec=.5*(vx*vx+vy*vy)*3,Et=Ep+Ec;
+    const bw=26,bbase=H-18;
+    [[Ep,120,'#f7c948','Ep'],[Ec,120,'#4af0c4','Ec'],[Et,130,'#7b9cff','Et']].forEach(([val,max,col,lbl],i) => {
+      const barX=14+i*40, barH=Math.min((val/max)*maxH,maxH);
+      ctx.fillStyle=col+'18'; ctx.fillRect(barX,bbase-maxH,bw,maxH);
+      ctx.fillStyle=col; ctx.shadowBlur=8; ctx.shadowColor=col;
+      ctx.fillRect(barX,bbase-barH,bw,barH); ctx.shadowBlur=0;
+      ctx.fillStyle=col; ctx.font='bold 10px JetBrains Mono'; ctx.textAlign='center';
+      ctx.fillText(lbl,barX+bw/2,bbase+12);
+    });
+
+    // ball
+    ctx.beginPath(); ctx.arc(bx,by,r,0,Math.PI*2);
+    const g=ctx.createRadialGradient(bx-r*.3,by-r*.3,0,bx,by,r);
+    g.addColorStop(0,'#fff'); g.addColorStop(.4,'#7b9cff'); g.addColorStop(1,'rgba(123,156,255,0)');
+    ctx.fillStyle=g; ctx.shadowBlur=18; ctx.shadowColor='#7b9cff'; ctx.fill(); ctx.shadowBlur=0;
+
+    // info
+    ctx.fillStyle='rgba(255,255,255,.35)'; ctx.font='11px JetBrains Mono'; ctx.textAlign='left';
+    ctx.fillText(`Ep≈${Ep.toFixed(0)}  Ec≈${Ec.toFixed(0)}  Et≈${Et.toFixed(0)} (constante)`, 134,H-6);
+
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ── QUIZ ──
+function qa(btn,t,msg){ doQ(btn,t,msg,'q1fb'); }
+function qb(btn,t,msg){ doQ(btn,t,msg,'q2fb'); }
+function qc(btn,t,msg){ doQ(btn,t,msg,'q3fb'); }
+function qd(btn,t,msg){ doQ(btn,t,msg,'q4fb'); }
+function doQ(btn,t,msg,fbId) {
+  btn.closest('.opts').querySelectorAll('.opt').forEach(o=>o.disabled=true);
+  btn.classList.add(t);
+  const fb=document.getElementById(fbId);
+  fb.textContent=(t==='ok'?'✅ ':'❌ ')+msg;
+  fb.style.color=t==='ok'?'var(--teal)':'var(--rose)';
+  fb.classList.add('show');
+}
 </script>
 </body>
 </html>
